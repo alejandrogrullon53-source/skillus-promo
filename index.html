@@ -350,7 +350,10 @@
     const SUPABASE_URL = "https://qnfooqijoziizzgunjfe.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuZm9vcWlqb3ppaXp6Z3VuamZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMzI2NjAsImV4cCI6MjA5MTgwODY2MH0.1Mgtku4Ss46at3mf36gEhe5uDM0IT0AeXQGcf7fKJ7I";
 
-    const supabaseClient = window.supabase.createClient((SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = window.supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_ANON_KEY
+);
 
     const form = document.getElementById("leadForm");
     const submitBtn = document.getElementById("submitBtn");
@@ -405,14 +408,18 @@ const { error: customerError } = await supabaseClient.from("customers")
 
 if (leadError || customerError) {
   console.error(leadError || customerError);
-        console.error(error);
-        errorBox.style.display = "block";
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Acceder a mi beneficio ✨";
-        return;
-      }
 
-      form.reset();
+  errorBox.style.display = "block";
+
+  submitBtn.disabled = false;
+
+  submitBtn.textContent =
+    "Acceder a mi beneficio ✨";
+
+  return;
+}
+
+form.reset();
       successBox.style.display = "block";
       submitBtn.textContent = "Beneficio activado";
     });
