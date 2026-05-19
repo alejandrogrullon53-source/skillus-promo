@@ -378,11 +378,23 @@
 
 const customerPayload = {
   name: fullName,
+
   phone: phone,
+
   email: email,
+
   status: "Nuevo",
-  source: "Promo 20% segunda pieza",
-  notes: "Lead captado desde landing promocional 20% en segunda pieza"
+
+  source: "promo_landing",
+
+  notes:
+    "Lead captado desde landing promocional 20% OFF.",
+
+  contact_method: "whatsapp",
+
+  contact_value: phone,
+
+  history: [],
 };
 
 const { error: leadError } = await supabaseClient.from("promotion_leads")
