@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Joyeria Skillus | Beneficio Exclusivo</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f8f1e8;
+      color: #1f1a17;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 34px;
+      padding: 34px 60px;
+      align-items: center;
+      background: linear-gradient(90deg, #f4e7d8 0%, #fffaf4 100%);
+      overflow: hidden;
+    }
+
+    .left {
+      min-height: calc(100vh - 68px);
+      border-radius: 34px;
+      background:
+        linear-gradient(rgba(255,244,232,0.05), rgba(255,244,232,0.55)),
+        url("joya-fondo.png");
+      background-size: cover;
+      background-position: center top;
+      position: relative;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 34px;
+    }
+
+    .left-content {
+      width: 100%;
+      max-width: 620px;
+      text-align: center;
+      padding: 20px;
+      background: linear-gradient(rgba(255,250,244,0.05), rgba(255,250,244,0.78));
+      border-radius: 28px;
+      backdrop-filter: blur(2px);
+    }
+
+    .diamond {
+      font-size: 42px;
+      color: #a88445;
+      margin-bottom: 8px;
+    }
+
+    .left-title {
+      font-family: Georgia, serif;
+      font-size: 48px;
+      letter-spacing: 3px;
+      line-height: 1.05;
+      color: #2a1c12;
+    }
+
+    .left-title span {
+      color: #a88445;
+      font-size: 38px;
+    }
+
+    .left-subtitle {
+      font-family: Georgia, serif;
+      font-style: italic;
+      color: #a88445;
+      font-size: 28px;
+      margin: 14px 0 24px;
+    }
+
+    .features {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .feature {
+      border: 1px solid rgba(168,132,69,0.25);
+      border-radius: 18px;
+      padding: 14px 8px;
+      background: rgba(255,250,244,0.48);
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .feature .icon {
+      display: block;
+      font-size: 26px;
+      margin-bottom: 6px;
+    }
+
+    .quote {
+      border: 1px solid rgba(168,132,69,0.28);
+      border-radius: 16px;
+      padding: 12px;
+      background: rgba(255,250,244,0.58);
+      color: #7a5a34;
+      font-size: 16px;
+    }
+
+    .right {
+      display: flex;
+      justify-content: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      background: rgba(255, 250, 244, 0.94);
+      border: 1px solid #e8ded3;
+      border-radius: 32px;
+      padding: 36px;
+      text-align: center;
+      box-shadow: 0 22px 60px rgba(78, 54, 28, 0.14);
+    }
+
+    .brand {
+      letter-spacing: 10px;
+      color: #a88445;
+      font-size: 28px;
+      margin-bottom: 14px;
+      font-family: Georgia, serif;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-family: Georgia, serif;
+      font-size: 72px;
+      margin: 0;
+      color: #b8914e;
+      line-height: 0.92;
+    }
+
+    h2 {
+      margin: 6px 0 18px;
+      font-family: Georgia, serif;
+      font-size: 31px;
+      font-style: italic;
+      font-weight: 400;
+    }
+
+    p {
+      color: #7a6f67;
+      font-size: 16px;
+      line-height: 1.45;
+      margin: 10px 0;
+    }
+
+    input {
+      width: 100%;
+      padding: 15px;
+      margin-top: 12px;
+      border: 1px solid #d9cfc2;
+      border-radius: 15px;
+      font-size: 15px;
+      background: rgba(255,255,255,0.92);
+    }
+
+    button {
+      width: 100%;
+      margin-top: 16px;
+      padding: 16px;
+      border: none;
+      border-radius: 15px;
+      background: linear-gradient(135deg, #c9a96a, #9b7439);
+      color: white;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .small {
+      font-size: 12px;
+      margin-top: 12px;
+    }
+
+    .trust {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 20px 0 12px;
+      padding: 12px;
+      border: 1px solid #e8ded3;
+      border-radius: 16px;
+      font-size: 12px;
+      color: #7a6f67;
+    }
+
+    .limited {
+      background: #efe2cf;
+      border-radius: 14px;
+      padding: 12px;
+      color: #7a4f1c;
+      font-weight: bold;
+      font-size: 14px;
+    }
+
+    .success, .error {
+      display: none;
+      padding: 12px;
+      border-radius: 14px;
+      margin-top: 12px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .success {
+      background: #e9f7ef;
+      color: #1f7a4d;
+    }
+
+    .error {
+      background: #fdecea;
+      color: #b3261e;
+    }
+
+    @media (max-width: 900px) {
+      .page {
+        grid-template-columns: 1fr;
+        padding: 18px;
+      }
+
+      .left {
+        min-height: 360px;
+        padding: 18px;
+      }
+
+      .left-title {
+        font-size: 34px;
+      }
+
+      .left-title span {
+        font-size: 26px;
+      }
+
+      .left-subtitle {
+        font-size: 22px;
+      }
+
+      .card {
+        padding: 26px;
+      }
+
+      h1 {
+        font-size: 54px;
+      }
+
+      h2 {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <section class="left">
+      <div class="left-content">
+        <div class="diamond">◇</div>
+
+        <div class="left-title">
+          <span>JOYERÍA QUE</span><br />
+          TE ACOMPAÑA
+        </div>
+
+        <div class="left-subtitle">Brilla cada momento ✨</div>
+
+        <div class="features">
+          <div class="feature">
+            <span class="icon">💎</span>
+            DISEÑOS<br />exclusivos
+          </div>
+          <div class="feature">
+            <span class="icon">🛡️</span>
+            CALIDAD<br />premium
+          </div>
+          <div class="feature">
+            <span class="icon">🤍</span>
+            MÁS DE 3,500<br />clientas felices
+          </div>
+        </div>
+
+        <div class="quote">
+          ✨ Piezas con significado, creadas para durar.
+        </div>
+      </div>
+    </section>
+
+    <section class="right">
+      <div class="card">
+        <div class="brand">SKILLUS</div>
+        <div class="subtitle">Accede a un beneficio exclusivo</div>
+
+        <h1>20% OFF</h1>
+        <h2>en tu segunda pieza ✨</h2>
+
+        <p>Regístrate con tus datos para activar tu descuento especial en Joyeria Skillus 💎</p>
+
+        <form id="leadForm">
+          <input id="name" type="text" placeholder="Nombre completo" required />
+          <input id="phone" type="tel" placeholder="WhatsApp" required />
+          <input id="email" type="email" placeholder="Correo electrónico" required />
+
+          <button id="submitBtn" type="submit">Acceder a mi beneficio ✨</button>
+        </form>
+
+        <p class="small">🔒 Tus datos están seguros con nosotros.</p>
+
+        <div class="trust">
+          <div>💎 Diseños exclusivos</div>
+          <div>🛡️ Calidad premium</div>
+          <div>🤍 Más de 3,500 clientas</div>
+        </div>
+
+        <div class="limited">🕒 Promoción disponible por tiempo limitado.</div>
+
+        <div id="success" class="success">
+          ¡Listo! Tu acceso fue activado 💎<br />
+          Revisa tu WhatsApp próximamente.
+        </div>
+
+        <div id="error" class="error">
+          Hubo un error. Intenta nuevamente.
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://qnfooqijoziizzgunjfe.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuZm9vcWlqb3ppaXp6Z3VuamZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMzI2NjAsImV4cCI6MjA5MTgwODY2MH0.1Mgtku4Ss46at3mf36gEhe5uDM0IT0AeXQGcf7fKJ7I";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById("leadForm");
+    const submitBtn = document.getElementById("submitBtn");
+    const successBox = document.getElementById("success");
+    const errorBox = document.getElementById("error");
+
+    form.addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Activando...";
+      successBox.style.display = "none";
+      errorBox.style.display = "none";
+
+      const fullName = document.getElementById("name").value.trim();
+      const phone = document.getElementById("phone").value.trim();
+      const email = document.getElementById("email").value.trim();
+
+      const leadPayload = {
+  full_name: fullName,
+  phone: phone,
+  email: email,
+  source: "Promo 20% segunda pieza"
+};
+
+const customerPayload = {
+  name: fullName,
+  phone: phone,
+  email: email,
+  status: "Nuevo",
+  source: "Promo 20% segunda pieza",
+  notes: "Lead captado desde landing promocional 20% en segunda pieza"
+};
+
+const { error: leadError } = await supabase
+  .from("promotion_leads")
+  .insert(leadPayload);
+
+const { error: customerError } = await supabase
+  .from("customers")
+  .insert(customerPayload);
+
+if (leadError || customerError) {
+  console.error(leadError || customerError);
+        console.error(error);
+        errorBox.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Acceder a mi beneficio ✨";
+        return;
+      }
+
+      form.reset();
+      successBox.style.display = "block";
+      submitBtn.textContent = "Beneficio activado";
+    });
+  </script>
+</body>
+</html>
