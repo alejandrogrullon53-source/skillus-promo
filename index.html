@@ -350,7 +350,7 @@
     const SUPABASE_URL = "https://qnfooqijoziizzgunjfe.supabase.co";
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuZm9vcWlqb3ppaXp6Z3VuamZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMzI2NjAsImV4cCI6MjA5MTgwODY2MH0.1Mgtku4Ss46at3mf36gEhe5uDM0IT0AeXQGcf7fKJ7I";
 
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const supabaseClient = window.supabase.createClient((SUPABASE_URL, SUPABASE_ANON_KEY);
 
     const form = document.getElementById("leadForm");
     const submitBtn = document.getElementById("submitBtn");
@@ -385,12 +385,10 @@ const customerPayload = {
   notes: "Lead captado desde landing promocional 20% en segunda pieza"
 };
 
-const { error: leadError } = await supabase
-  .from("promotion_leads")
+const { error: leadError } = await supabaseClient.from("promotion_leads")
   .insert(leadPayload);
 
-const { error: customerError } = await supabase
-  .from("customers")
+const { error: customerError } = await supabaseClient.from("customers")
   .insert(customerPayload);
 
 if (leadError || customerError) {
