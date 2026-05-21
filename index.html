@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Joyeria Skillus | Beneficio Exclusivo</title>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Italiana&display=swap');
   <style>
     * { box-sizing: border-box; }
 
@@ -43,13 +43,14 @@
     }
 
     .left-content {
-      width: 100%;
-      max-width: 620px;
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       text-align: center;
-      padding: 20px;
-      background: linear-gradient(rgba(255,250,244,0.05), rgba(255,250,244,0.78));
-      border-radius: 28px;
-      backdrop-filter: blur(2px);
+      z-index: 2;
     }
 
     .diamond {
@@ -59,25 +60,42 @@
     }
 
     .left-title {
-  font-family: Georgia, serif;
-  font-size: 48px;
-  letter-spacing: 3px;
-  line-height: 1.05;
-
-  color: #b8914e;
-}
+      font-family: "Cormorant Garamond", serif;
+      font-size: 58px;
+      font-weight: 500;
+      line-height: .92;
+      letter-spacing: 1px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      text-align: center;
+      color: white;
+      text-shadow: 0 3px 22px rgba(0,0,0,.20);
+      margin: 0 auto;
+      gap: 14px;
+      position: relative;
+      z-index: 2;
+    }
 
     .left-title span {
-      color: #a88445;
-      font-size: 38px;
+      display: block;
+      font-family: "Italiana", serif;
+      font-size: 34px;
+      letter-spacing: 7px;
+      color: #241811; /* negro elegante */
+      margin-bottom: 10px;
     }
 
     .left-subtitle {
-      font-family: Georgia, serif;
+      font-family: "Cormorant Garamond", serif;
       font-style: italic;
-      color: #a88445;
-      font-size: 28px;
-      margin: 14px 0 24px;
+      font-size: 30px;
+      font-weight: 400;
+      color: #2f2218; /* negro elegante */
+      letter-spacing: .5px;
+      margin-top: 16px;
     }
 
     .features {
@@ -352,9 +370,9 @@
     const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFuZm9vcWlqb3ppaXp6Z3VuamZlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzYyMzI2NjAsImV4cCI6MjA5MTgwODY2MH0.1Mgtku4Ss46at3mf36gEhe5uDM0IT0AeXQGcf7fKJ7I";
 
     const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-);
+      SUPABASE_URL,
+      SUPABASE_ANON_KEY
+    );
 
     const form = document.getElementById("leadForm");
     const submitBtn = document.getElementById("submitBtn");
@@ -374,53 +392,39 @@
       const email = document.getElementById("email").value.trim();
 
       const leadPayload = {
-  full_name: fullName,
-  phone: phone,
-  email: email,
-  source: "Promo 20% segunda pieza"
-};
+        full_name: fullName,
+        phone: phone,
+        email: email,
+        source: "Promo 20% segunda pieza"
+      };
 
-const customerPayload = {
-  name: fullName,
+      const customerPayload = {
+        name: fullName,
+        phone: phone,
+        email: email,
+        status: "Nuevo",
+        source: "promo_landing",
+        notes: "Lead captado desde landing promocional 20% OFF.",
+        contact_method: "whatsapp",
+        contact_value: phone,
+        history: [],
+      };
 
-  phone: phone,
+      const { error: leadError } = await supabaseClient.from("promotion_leads")
+        .insert(leadPayload);
 
-  email: email,
+      const { error: customerError } = await supabaseClient.from("customers")
+        .insert(customerPayload);
 
-  status: "Nuevo",
+      if (leadError || customerError) {
+        console.error(leadError || customerError);
+        errorBox.style.display = "block";
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Acceder a mi beneficio ✨";
+        return;
+      }
 
-  source: "promo_landing",
-
-  notes:
-    "Lead captado desde landing promocional 20% OFF.",
-
-  contact_method: "whatsapp",
-
-  contact_value: phone,
-
-  history: [],
-};
-
-const { error: leadError } = await supabaseClient.from("promotion_leads")
-  .insert(leadPayload);
-
-const { error: customerError } = await supabaseClient.from("customers")
-  .insert(customerPayload);
-
-if (leadError || customerError) {
-  console.error(leadError || customerError);
-
-  errorBox.style.display = "block";
-
-  submitBtn.disabled = false;
-
-  submitBtn.textContent =
-    "Acceder a mi beneficio ✨";
-
-  return;
-}
-
-form.reset();
+      form.reset();
       successBox.style.display = "block";
       submitBtn.textContent = "Beneficio activado";
     });
