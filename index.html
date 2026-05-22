@@ -353,9 +353,9 @@
         <div class="limited">🕒 Promoción disponible por tiempo limitado.</div>
 
         <div id="success" class="success">
-          ¡Listo! Tu acceso fue activado 💎<br />
-          Revisa tu WhatsApp próximamente.
-        </div>
+  ¡Listo! Tu beneficio del 20% fue activado 💛<br />
+  Te contactaremos pronto para ayudarte a elegir tu próxima pieza.
+</div>
 
         <div id="error" class="error">
           Hubo un error. Intenta nuevamente.
@@ -413,16 +413,28 @@
       const { error: leadError } = await supabaseClient.from("promotion_leads")
         .insert(leadPayload);
 
-      const { error: customerError } = await supabaseClient.from("customers")
-        .insert(customerPayload);
+     if (leadError) {
+  console.error("Error guardando lead:", leadError);
+  errorBox.style.display = "block";
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Acceder a mi beneficio ✨";
+  return;
+}
 
-      if (leadError || customerError) {
-        console.error(leadError || customerError);
-        errorBox.style.display = "block";
-        submitBtn.disabled = false;
-        submitBtn.textContent = "Acceder a mi beneficio ✨";
-        return;
-      }
+const { error: customerError } = await supabaseClient
+  .from("customers")
+  .upsert(customerPayload, {
+    onConflict: "phone"
+  });
+
+if (customerError) {
+  console.warn("El lead se guardó, pero no se pudo crear/actualizar customer:", customerError);
+}
+
+
+if (customerError) {
+  console.warn("Customer ya existía:", customerError);
+}
 
       form.reset();
       successBox.style.display = "block";
